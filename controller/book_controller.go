@@ -1,32 +1,26 @@
 package controller
 
 import (
-	"github.com/MarkyMan4/gin-tutorial/entity"
-	"github.com/MarkyMan4/gin-tutorial/service"
+	"github.com/MarkyMan4/gin-tutorial/model"
 	"github.com/gin-gonic/gin"
 )
 
-type BookController interface {
-	FindAll() []entity.Book
-	Save(ctx *gin.Context) entity.Book
+type BookController struct {
+	books []model.Book
 }
 
-type bookController struct {
-	service service.BookService
+func New() *BookController {
+	return &BookController{}
 }
 
-func New(service service.BookService) BookController {
-	return &bookController{service: service}
+func (c *BookController) FindAll() []model.Book {
+	return c.books
 }
 
-func (c *bookController) FindAll() []entity.Book {
-	return c.service.FindAll()
-}
-
-func (c *bookController) Save(ctx *gin.Context) entity.Book {
-	var book entity.Book
+func (c *BookController) Save(ctx *gin.Context) model.Book {
+	var book model.Book
 	ctx.BindJSON(&book)
-	c.service.Save(book)
+	c.books = append(c.books, book)
 
 	return book
 }
