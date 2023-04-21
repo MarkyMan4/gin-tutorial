@@ -1,26 +1,35 @@
 package controller
 
 import (
+	"github.com/MarkyMan4/gin-tutorial/db"
 	"github.com/MarkyMan4/gin-tutorial/model"
 	"github.com/gin-gonic/gin"
 )
 
 type BookController struct {
-	books []model.Book
+	bookDb *db.BookDb
+	books  []model.Book
 }
 
-func New() *BookController {
-	return &BookController{}
+func New(bookDb *db.BookDb) *BookController {
+	return &BookController{bookDb: bookDb}
 }
 
 func (c *BookController) FindAll() []model.Book {
-	return c.books
+	var books []model.Book
+	result := c.bookDb.Db.Find(&books)
+
+	if result.Error != nil {
+		panic("failed to retrieve books")
+	}
+
+	return books
 }
 
 func (c *BookController) Save(ctx *gin.Context) model.Book {
 	var book model.Book
 	ctx.BindJSON(&book)
-	c.books = append(c.books, book)
+	c.bookDb.Db.Create(&book)
 
 	return book
 }

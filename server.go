@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/MarkyMan4/gin-tutorial/controller"
+	"github.com/MarkyMan4/gin-tutorial/db"
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	bookController *controller.BookController = controller.New()
+	bookDb         *db.BookDb                 = db.New("books.db")
+	bookController *controller.BookController = controller.New(bookDb)
 )
 
 func main() {
